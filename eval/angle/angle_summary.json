@@ -1,0 +1,8 @@
+{
+  "mae_deg": 48.256668954340356,
+  "num_samples": 4,
+  "num_valid": 4,
+  "valid_ratio": 1.0,
+  "conf_threshold": 0.5,
+  "imgsz": 640
+}

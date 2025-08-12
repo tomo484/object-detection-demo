@@ -1,0 +1,17 @@
+path: ./data
+train: images/train
+val: images/val
+test: images/test
+
+kpt_shape: [2, 3]
+flip_idx: [0, 1]
+
+nc: 1
+names: ['needle']
+
+roboflow:
+  workspace: objectdetection-kjwct
+  project: my-first-project-zsqfw
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/objectdetection-kjwct/my-first-project-zsqfw/dataset/2

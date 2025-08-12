@@ -1,0 +1,7 @@
+imgsz: 640
+conf_threshold: 0.5
+weights: /home/tomotomo/workspace/object-detection-demo/runs/pose/train3/weights/best.pt
+test_images: /home/tomotomo/workspace/object-detection-demo/data/images/test
+test_labels: /home/tomotomo/workspace/object-detection-demo/data/labels/test
+out_dir: /home/tomotomo/workspace/object-detection-demo/eval/angle
+viz: true
