@@ -1,0 +1,12 @@
+# config/preprocessing_config.yml（簡潔版）
+clahe:
+  clip_limit: 3.0
+  tile_grid_size: [8, 8]
+
+closing:
+  kernel_size: [3, 2]
+  iterations: 1
+
+scales:
+  shrink: [0.75, 0.5]
+  expand: [1.5, 2.0]
