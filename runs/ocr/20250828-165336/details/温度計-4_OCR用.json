@@ -1,0 +1,103 @@
+{
+  "image": "data_ocr/images/温度計-4_OCR用.jpg",
+  "all_lines": [
+    {
+      "text": "35.9",
+      "bounding_polygon": [
+        {
+          "x": 2000,
+          "y": 2526
+        },
+        {
+          "x": 2132,
+          "y": 2432
+        },
+        {
+          "x": 2166,
+          "y": 2488
+        },
+        {
+          "x": 2038,
+          "y": 2582
+        }
+      ],
+      "words": [
+        {
+          "text": "35.9",
+          "confidence": 0.59,
+          "bounding_polygon": [
+            {
+              "x": 2020,
+              "y": 2511
+            },
+            {
+              "x": 2111,
+              "y": 2445
+            },
+            {
+              "x": 2151,
+              "y": 2500
+            },
+            {
+              "x": 2060,
+              "y": 2566
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "numeric": [
+    {
+      "text": "35.9",
+      "bounding_polygon": [
+        {
+          "x": 2000,
+          "y": 2526
+        },
+        {
+          "x": 2132,
+          "y": 2432
+        },
+        {
+          "x": 2166,
+          "y": 2488
+        },
+        {
+          "x": 2038,
+          "y": 2582
+        }
+      ],
+      "words": [
+        {
+          "text": "35.9",
+          "confidence": 0.59,
+          "bounding_polygon": [
+            {
+              "x": 2020,
+              "y": 2511
+            },
+            {
+              "x": 2111,
+              "y": 2445
+            },
+            {
+              "x": 2151,
+              "y": 2500
+            },
+            {
+              "x": 2060,
+              "y": 2566
+            }
+          ]
+        }
+      ],
+      "normalized": "35.9"
+    }
+  ],
+  "preprocessing": {
+    "used_preprocessing": true,
+    "attempts": 1,
+    "final_stage": "attempt_1"
+  }
+}

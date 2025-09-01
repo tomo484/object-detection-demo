@@ -1,0 +1,39 @@
+[
+  {
+    "image": "data_ocr/images/IMG_6279.jpeg",
+    "image_name": "IMG_6279",
+    "failure_stage": "regex_too_strict",
+    "total_lines": 28,
+    "numeric_candidates": [
+      "2500 LEET",
+      "3GOW LIGHT",
+      "528 TH FR SA"
+    ],
+    "regex_matches": [],
+    "picked_because": "regex_filter_blocked",
+    "best_result": "",
+    "success": false
+  },
+  {
+    "image": "data_ocr/images/IMG_6280.jpeg",
+    "image_name": "IMG_6280",
+    "failure_stage": "no_numeric_content",
+    "total_lines": 3,
+    "numeric_candidates": [],
+    "regex_matches": [],
+    "picked_because": "no_digits_found",
+    "best_result": "",
+    "success": false
+  },
+  {
+    "image": "data_ocr/images/IMG_6282.jpeg",
+    "image_name": "IMG_6282",
+    "failure_stage": "no_numeric_content",
+    "total_lines": 2,
+    "numeric_candidates": [],
+    "regex_matches": [],
+    "picked_because": "no_digits_found",
+    "best_result": "",
+    "success": false
+  }
+]
