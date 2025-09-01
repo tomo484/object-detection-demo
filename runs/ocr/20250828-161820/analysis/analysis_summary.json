@@ -1,0 +1,30 @@
+{
+  "total_images": 1,
+  "success_count": 1,
+  "success_rate": 1.0,
+  "failure_stages": {
+    "success": 1
+  },
+  "picked_reasons": {
+    "regex_match": 1
+  },
+  "regex_pattern": "^(?!.*[IO]/[IO])(?![IO]+$)(?![A-Z]+$)[0-9OIl:.,+\\-_/\\\\()\\s°C°F%℃]+$",
+  "detailed_results": [
+    {
+      "image": "data_ocr/images/ストップウォッチ-5_OCR用.jpg",
+      "image_name": "ストップウォッチ-5_OCR用",
+      "failure_stage": "success",
+      "total_lines": 5,
+      "numeric_candidates": [
+        "24",
+        "12.21 HA"
+      ],
+      "regex_matches": [
+        "24"
+      ],
+      "picked_because": "regex_match",
+      "best_result": "24",
+      "success": true
+    }
+  ]
+}

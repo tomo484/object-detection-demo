@@ -1,0 +1,76 @@
+[
+  {
+    "image": "data_ocr/images/ストップウォッチ-1_OCR用.jpg",
+    "image_name": "ストップウォッチ-1_OCR用",
+    "failure_stage": "regex_too_strict",
+    "total_lines": 11,
+    "numeric_candidates": [
+      "XL-009A"
+    ],
+    "regex_matches": [],
+    "picked_because": "regex_filter_blocked",
+    "best_result": "",
+    "success": false
+  },
+  {
+    "image": "data_ocr/images/ストップウォッチ-4_OCR用.jpg",
+    "image_name": "ストップウォッチ-4_OCR用",
+    "failure_stage": "regex_too_strict",
+    "total_lines": 10,
+    "numeric_candidates": [
+      "24H",
+      "10-C Hur",
+      "WATER 50M RESIST"
+    ],
+    "regex_matches": [],
+    "picked_because": "regex_filter_blocked",
+    "best_result": "",
+    "success": false
+  },
+  {
+    "image": "data_ocr/images/ストップウォッチ-5_OCR用.jpg",
+    "image_name": "ストップウォッチ-5_OCR用",
+    "failure_stage": "no_numeric_content",
+    "total_lines": 2,
+    "numeric_candidates": [],
+    "regex_matches": [],
+    "picked_because": "no_digits_found",
+    "best_result": "",
+    "success": false
+  },
+  {
+    "image": "data_ocr/images/温度計-2_OCR用.jpg",
+    "image_name": "温度計-2_OCR用",
+    "failure_stage": "detection_failed",
+    "total_lines": 0,
+    "numeric_candidates": [],
+    "regex_matches": [],
+    "picked_because": "no_text_detected",
+    "best_result": "",
+    "success": false
+  },
+  {
+    "image": "data_ocr/images/温度計-3_OCR用.jpg",
+    "image_name": "温度計-3_OCR用",
+    "failure_stage": "regex_too_strict",
+    "total_lines": 2,
+    "numeric_candidates": [
+      "382℃"
+    ],
+    "regex_matches": [],
+    "picked_because": "regex_filter_blocked",
+    "best_result": "",
+    "success": false
+  },
+  {
+    "image": "data_ocr/images/温度計-7_OCR用.jpg",
+    "image_name": "温度計-7_OCR用",
+    "failure_stage": "detection_failed",
+    "total_lines": 0,
+    "numeric_candidates": [],
+    "regex_matches": [],
+    "picked_because": "no_text_detected",
+    "best_result": "",
+    "success": false
+  }
+]

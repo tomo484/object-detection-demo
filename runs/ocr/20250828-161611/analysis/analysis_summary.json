@@ -1,0 +1,40 @@
+{
+  "total_images": 1,
+  "success_count": 1,
+  "success_rate": 1.0,
+  "failure_stages": {
+    "success": 1
+  },
+  "picked_reasons": {
+    "regex_match": 1
+  },
+  "regex_pattern": "^(?!.*[IO]/[IO])(?![IO]+$)(?![A-Z]+$)[0-9OIl:.,+\\-_/\\\\()\\s°C°F%℃]+$",
+  "detailed_results": [
+    {
+      "image": "data_ocr/images/デジタル時計-2_OCR用.jpg",
+      "image_name": "デジタル時計-2_OCR用",
+      "failure_stage": "success",
+      "total_lines": 15,
+      "numeric_candidates": [
+        "04",
+        ". 1 1:38",
+        "92 96",
+        "- 2",
+        "165",
+        "80",
+        "KHZ 800"
+      ],
+      "regex_matches": [
+        "04",
+        ". 1 1:38",
+        "92 96",
+        "- 2",
+        "165",
+        "80"
+      ],
+      "picked_because": "regex_match",
+      "best_result": "04",
+      "success": true
+    }
+  ]
+}

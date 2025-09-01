@@ -1,0 +1,53 @@
+{
+  "total_images": 1,
+  "success_count": 1,
+  "success_rate": 1.0,
+  "failure_stages": {
+    "success": 1
+  },
+  "picked_reasons": {
+    "regex_match": 1
+  },
+  "regex_pattern": "^(?!.*[IO]/[IO])(?![IO]+$)(?![A-Z]+$)[0-9OIl:.,+\\-_/\\\\()\\s°C°F%℃]+$",
+  "detailed_results": [
+    {
+      "image": "data_ocr/images/電卓-3_OCR用.jpg",
+      "image_name": "電卓-3_OCR用",
+      "failure_stage": "success",
+      "total_lines": 25,
+      "numeric_candidates": [
+        "10 DIGIT BIG NUMBER",
+        "AT-240",
+        "314",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "1",
+        "2",
+        "3"
+      ],
+      "regex_matches": [
+        "314",
+        "+/_",
+        "7",
+        "8",
+        "9",
+        "%",
+        "4",
+        "5",
+        "6",
+        "1",
+        "2",
+        "3",
+        "+",
+        "."
+      ],
+      "picked_because": "regex_match",
+      "best_result": "314",
+      "success": true
+    }
+  ]
+}

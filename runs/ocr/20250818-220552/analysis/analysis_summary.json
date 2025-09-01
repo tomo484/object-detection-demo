@@ -1,0 +1,381 @@
+{
+  "total_images": 13,
+  "success_count": 10,
+  "success_rate": 0.7692307692307693,
+  "failure_stages": {
+    "success": 10,
+    "regex_too_strict": 1,
+    "no_numeric_content": 2
+  },
+  "picked_reasons": {
+    "regex_match": 10,
+    "regex_filter_blocked": 1,
+    "no_digits_found": 2
+  },
+  "regex_pattern": "^[0-9OIl:.,+\\-_/\\\\()\\s°C°F%]+$",
+  "detailed_results": [
+    {
+      "image": "data_ocr/images/IMG_6278.jpeg",
+      "image_name": "IMG_6278",
+      "failure_stage": "success",
+      "total_lines": 5,
+      "numeric_candidates": [
+        "8 50"
+      ],
+      "regex_matches": [
+        "8 50"
+      ],
+      "picked_because": "regex_match",
+      "best_result": "8 50",
+      "success": true
+    },
+    {
+      "image": "data_ocr/images/IMG_6279.jpeg",
+      "image_name": "IMG_6279",
+      "failure_stage": "regex_too_strict",
+      "total_lines": 28,
+      "numeric_candidates": [
+        "2500 LEET",
+        "3GOW LIGHT",
+        "528 TH FR SA"
+      ],
+      "regex_matches": [],
+      "picked_because": "regex_filter_blocked",
+      "best_result": "",
+      "success": false
+    },
+    {
+      "image": "data_ocr/images/IMG_6280.jpeg",
+      "image_name": "IMG_6280",
+      "failure_stage": "no_numeric_content",
+      "total_lines": 3,
+      "numeric_candidates": [],
+      "regex_matches": [],
+      "picked_because": "no_digits_found",
+      "best_result": "",
+      "success": false
+    },
+    {
+      "image": "data_ocr/images/IMG_6281.jpeg",
+      "image_name": "IMG_6281",
+      "failure_stage": "success",
+      "total_lines": 6,
+      "numeric_candidates": [
+        "OSTART 1363M+",
+        "2 1:5030"
+      ],
+      "regex_matches": [
+        "2 1:5030"
+      ],
+      "picked_because": "regex_match",
+      "best_result": "2 1:5030",
+      "success": true
+    },
+    {
+      "image": "data_ocr/images/IMG_6282.jpeg",
+      "image_name": "IMG_6282",
+      "failure_stage": "no_numeric_content",
+      "total_lines": 2,
+      "numeric_candidates": [],
+      "regex_matches": [],
+      "picked_because": "no_digits_found",
+      "best_result": "",
+      "success": false
+    },
+    {
+      "image": "data_ocr/images/IMG_6283.jpeg",
+      "image_name": "IMG_6283",
+      "failure_stage": "success",
+      "total_lines": 44,
+      "numeric_candidates": [
+        ":4",
+        ":3",
+        "5",
+        "SL 0120-741-2",
+        "10E",
+        "t.544",
+        "2 1:505"
+      ],
+      "regex_matches": [
+        ":4",
+        ":3",
+        "5",
+        "2 1:505"
+      ],
+      "picked_because": "regex_match",
+      "best_result": ":4",
+      "success": true
+    },
+    {
+      "image": "data_ocr/images/IMG_6284.jpeg",
+      "image_name": "IMG_6284",
+      "failure_stage": "success",
+      "total_lines": 11,
+      "numeric_candidates": [
+        "2 :5055",
+        ". 511",
+        "START 13838"
+      ],
+      "regex_matches": [
+        "2 :5055",
+        ". 511"
+      ],
+      "picked_because": "regex_match",
+      "best_result": "2 :5055",
+      "success": true
+    },
+    {
+      "image": "data_ocr/images/IMG_6285.jpeg",
+      "image_name": "IMG_6285",
+      "failure_stage": "success",
+      "total_lines": 27,
+      "numeric_candidates": [
+        "12",
+        "45 1842",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "1",
+        "2",
+        "3",
+        "0",
+        "00"
+      ],
+      "regex_matches": [
+        "12",
+        "45 1842",
+        "OFF",
+        "%",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "-",
+        "1",
+        "2",
+        "3",
+        "+",
+        "0",
+        "00"
+      ],
+      "picked_because": "regex_match",
+      "best_result": "12",
+      "success": true
+    },
+    {
+      "image": "data_ocr/images/IMG_6286.jpeg",
+      "image_name": "IMG_6286",
+      "failure_stage": "success",
+      "total_lines": 48,
+      "numeric_candidates": [
+        "262 48",
+        "12 1",
+        "11 .",
+        "10",
+        "7 6",
+        "5",
+        "金融市場分析を変える01~とき! マルコス·コベス·デ·アラ",
+        "1",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "1",
+        "2",
+        "3",
+        "0",
+        "00"
+      ],
+      "regex_matches": [
+        "262 48",
+        "12 1",
+        "11 .",
+        "10",
+        "7 6",
+        "5",
+        "1",
+        "OFF",
+        "%",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "-",
+        "1",
+        "2",
+        "3",
+        "0",
+        "00",
+        "."
+      ],
+      "picked_because": "regex_match",
+      "best_result": "262 48",
+      "success": true
+    },
+    {
+      "image": "data_ocr/images/IMG_6287.jpeg",
+      "image_name": "IMG_6287",
+      "failure_stage": "success",
+      "total_lines": 58,
+      "numeric_candidates": [
+        "4",
+        "1 6",
+        "12",
+        "45 1842",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "1",
+        "2",
+        "3",
+        "0",
+        "00"
+      ],
+      "regex_matches": [
+        "4",
+        "1 6",
+        "12",
+        "45 1842",
+        "OFF",
+        "+/-",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "1",
+        "2",
+        "3",
+        "0",
+        "00"
+      ],
+      "picked_because": "regex_match",
+      "best_result": "4",
+      "success": true
+    },
+    {
+      "image": "data_ocr/images/IMG_6288.jpeg",
+      "image_name": "IMG_6288",
+      "failure_stage": "success",
+      "total_lines": 5,
+      "numeric_candidates": [
+        "12",
+        "45 1842"
+      ],
+      "regex_matches": [
+        "12",
+        "45 1842",
+        "+/-"
+      ],
+      "picked_because": "regex_match",
+      "best_result": "12",
+      "success": true
+    },
+    {
+      "image": "data_ocr/images/IMG_6289.jpeg",
+      "image_name": "IMG_6289",
+      "failure_stage": "success",
+      "total_lines": 52,
+      "numeric_candidates": [
+        "10",
+        "150mm",
+        "8",
+        "5",
+        "7",
+        "金融市場汾断を変えらの1曲と選購 マルコス·ロベス·ニアン",
+        "12",
+        "45 1842",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "1",
+        "2",
+        "3",
+        "0",
+        "00"
+      ],
+      "regex_matches": [
+        "10",
+        "8",
+        "5",
+        "7",
+        "12",
+        "45 1842",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "1",
+        "2",
+        "3",
+        "0",
+        "00"
+      ],
+      "picked_because": "regex_match",
+      "best_result": "10",
+      "success": true
+    },
+    {
+      "image": "data_ocr/images/IMG_6290.jpeg",
+      "image_name": "IMG_6290",
+      "failure_stage": "success",
+      "total_lines": 30,
+      "numeric_candidates": [
+        "12",
+        "45 1842",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "1",
+        "2",
+        "3",
+        "0",
+        "00"
+      ],
+      "regex_matches": [
+        "12",
+        "45 1842",
+        "OFF",
+        "+/-",
+        "%",
+        "7",
+        "8",
+        "9",
+        "4",
+        "5",
+        "6",
+        "-",
+        "1",
+        "2",
+        "3",
+        "+",
+        "0",
+        "00"
+      ],
+      "picked_because": "regex_match",
+      "best_result": "12",
+      "success": true
+    }
+  ]
+}
