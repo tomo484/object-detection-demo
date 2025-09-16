@@ -1,260 +1,329 @@
-# メーター針検出・数値読取システム - 開発者向けガイド
+# Digital Number OCR Reading System
 
-## 📋 プロジェクト概要
+## 📋 Overview
 
-本プロジェクトは、**アナログメーターの針位置を自動検出し、針の角度から数値を読み取るAIシステム**です。YOLOv8n-poseを使用したキーポイント検出とAzure Computer Vision OCRを組み合わせて、高精度なメーター読取を実現しています。
+This system is a **high-precision digital number recognition system that combines Azure Computer Vision API with a proprietary multi-stage preprocessing engine**. It automatically extracts numbers from digital display devices (thermometers, stopwatches, calculators, digital clocks, etc.) and normalizes/analyzes them to achieve automated digital reading.
 
-### 🎯 システムの目的
-- アナログメーターの針の位置を自動検出
-- 針の角度から実際の測定値への変換
-- OCRによる数値表示の読み取り
-- 工業・製造業での自動検査システムへの応用
+### 🎯 System Features
+- **Multi-stage preprocessing**: 4-stage adaptive preprocessing (S0→S1→S2→S3)
+- **Early termination**: Efficient processing termination upon success
+- **Digital display optimization**: Preprocessing presets optimized for LCD/LED displays
+- **ROI fallback**: Region-based processing when overall processing fails
+- **Smart normalization**: Context-aware character replacement and normalization
+- **Comprehensive analysis**: Detailed failure stage analysis and visualization
 
-### 📊 現在の精度
-- **針検出精度**: mAP50 = 99.5%、mAP50-95 = 87.1%
-- **キーポイント検出**: mAP50 = 99.5%、mAP50-95 = 91.0%
-- **角度精度**: 現在MAE 48.26°（目標: ≤3°）
-- **OCR成功率**: 76.9%（26枚中20枚成功）
+### 📊 Current Performance
+- **OCR Success Rate**: 76.9% (20 out of 26 images successful)
+- **Target Devices**: Thermometers, stopwatches, calculators, digital clocks, etc.
+- **Processing Efficiency**: Reduced average number of attempts through early termination
 
-## 🔧 技術スタック
+## 🔧 System Architecture
 
-### 主要フレームワーク・ライブラリ
-- **物体検出**: Ultralytics YOLO v8n-pose
-- **画像処理**: OpenCV
+### 📁 File Structure
+```
+scripts/ocr/
+├── run_ocr.py              # Main execution script
+├── analyze_ocr_results.py  # Result analysis and visualization
+├── utils.py               # Utility functions
+└── preprocess/            # Preprocessing engine
+    ├── __init__.py        # Module initialization
+    ├── engine.py          # Multi-stage preprocessing engine
+    ├── operations.py      # Image processing operations
+    └── logger.py          # Log management
+```
+
+### 🧩 Main Components
+
+#### 1. PreprocessingEngine (`preprocess/engine.py`)
+Main engine that controls multi-stage preprocessing
+
+**Key Methods**:
+- `process_image()`: Execute 4-stage preprocessing
+- `_try_ocr()`: OCR attempt and early termination decision
+- `_is_valid_numeric()`: Strict numeric validity check
+
+**Processing Stages**:
+- **S0**: Pass-through (OCR on original image)
+- **S1**: Basic preset application (invert, clahe, lcd_strong, decimal_enhance)
+- **S2**: Scaling × preset combinations (closing-1.5 as highest priority)
+- **S3**: ROI extraction fallback processing
+
+#### 2. PreprocessingOperations (`preprocess/operations.py`)
+Implementation of image preprocessing operations
+
+**Preset List**:
+- `invert`: Color inversion processing
+- `clahe`: Adaptive histogram equalization
+- `closing`: Morphological closing
+- `lcd_strong`: Powerful preprocessing specialized for LCD displays
+- `decimal_enhance`: Decimal point detection specialized processing
+- `as-is`: No transformation (scaling only)
+
+**ROI Functions**:
+- `extract_horizontal_rois()`: Automatic extraction of horizontal regions
+- `crop_roi()`: Region cropping
+- NMS (Non-Maximum Suppression) for duplicate removal
+
+#### 3. PreprocessingLogger (`preprocess/logger.py`)
+Log management and summary generation for attempt results
+
+## 🎮 Usage
+
+### 1. OCR Execution (`run_ocr.py`)
+
+#### Basic Execution
+```bash
+# Execute OCR with default settings
+python scripts/ocr/run_ocr.py
+
+# Specify specific pattern images
+python scripts/ocr/run_ocr.py --glob "data_ocr/images/*.jpg"
+
+# Specify output destination
+python scripts/ocr/run_ocr.py --outdir "runs/ocr/my_experiment"
+```
+
+#### Preprocessing Control
+```bash
+# Disable preprocessing (conventional processing only)
+python scripts/ocr/run_ocr.py --no-preprocessing
+
+# Enable preprocessing (default)
+python scripts/ocr/run_ocr.py
+```
+
+#### Output Files
+- `results.jsonl`: Detailed data of all results (JSONL format)
+- `numeric_lines.tsv`: Numeric extraction results (TSV format)
+- `details/`: Detailed JSON for each image (readability focused)
+
+### 2. Result Analysis (`analyze_ocr_results.py`)
+
+#### Basic Analysis
+```bash
+# Execute basic analysis
+python scripts/ocr/analyze_ocr_results.py --results-dir runs/ocr/20250816-160044
+
+# Custom output destination
+python scripts/ocr/analyze_ocr_results.py --results-dir runs/ocr/20250816-160044 --output-dir analysis_custom
+
+# Test regular expressions
+python scripts/ocr/analyze_ocr_results.py --results-dir runs/ocr/20250816-160044 --test-regex "^[0-9:.,]+$"
+```
+
+#### Output Files
+- `analysis_summary.json`: Comprehensive analysis results
+- `failed_cases.json`: Details of failed cases
+- `visualizations/`: Visualization images with bounding boxes
+
+## 🔍 Number Extraction Process
+
+### 1. OCR Processing
+Execute text detection using Azure Computer Vision API:
+```python
+def analyze_image_bytes(client: ImageAnalysisClient, img_bytes: bytes):
+    result = client.analyze(image_data=img_bytes, visual_features=[VisualFeatures.READ])
+    # Generate structured data including bounding polygons and confidence information
+```
+
+### 2. Numeric Pattern Recognition
+Extract numeric candidates using regular expressions:
+```python
+NUMERIC_RE = re.compile(r"^(?!.*[IO]/[IO])(?![IO]+$)(?![A-Z]+$)[0-9OIl:.,+\-_/\\()\s°C°F%℃]+$")
+```
+
+### 3. Smart Normalization
+Correct OCR misrecognitions based on context:
+```python
+def smart_normalize(text: str) -> str:
+    """Simple smart normalization"""
+    # Return non-numeric patterns as-is
+    non_numeric = ['I/O', 'O/I', 'ON', 'OFF', 'IO', 'OI']
+    if text.upper() in non_numeric:
+        return text
+    
+    # Preprocessing cleanup for time displays
+    # Convert ". 1 1:38" → "11:38"
+    cleaned = text
+    cleaned = re.sub(r'^[.\-\s]+', '', cleaned)
+    cleaned = re.sub(r'(\d)\s+(\d)', r'\1\2', cleaned)
+    
+    # Character replacement only when digits are present
+    if re.search(r'\d', cleaned):
+        cleaned = cleaned.replace("O", "0").replace("I", "1").replace("l", "1")
+    
+    return cleaned
+```
+
+### 4. Validity Verification
+Strictly check the validity of extracted numbers:
+```python
+def _is_valid_numeric(self, numeric_results):
+    """Simple numeric validity check"""
+    if not numeric_results:
+        return False
+    
+    text = numeric_results[0]["normalized"].strip()
+    
+    # Exclusion patterns (problematic ones)
+    exclude_patterns = [
+        r'^\.',                         # .11:34
+        r'^0:\d{2}$',                  # 0:03  
+        r'^\d{1,2}\.\d{3,}$',          # 10.004, 10.0045 (3+ decimal places)
+        r'^\d+\.\s+\d+$',              # 10. 0045 (decimal with space)
+        r'^0{3,}$',                    # 000
+        r'^\d{1}[°℃°F%]$',            # 7℃
+        r'^[°℃°FC%]+$',                # C, ℃ only
+        r'^\([IO]/[IO]\)$',            # (I/O), (O/I)
+    ]
+    
+    if any(re.match(p, text) for p in exclude_patterns):
+        return False
+    
+    # Basically OK if 2+ digits are present
+    digit_count = sum(1 for c in text if c.isdigit())
+    return digit_count >= 2
+```
+
+## 📈 Analysis and Visualization Features
+
+### Failure Stage Analysis
+The system provides 4-stage failure classification:
+1. **detection_failed**: OCR completely fails to detect text
+2. **no_numeric_content**: No lines containing digits found
+3. **regex_too_strict**: Regular expression filter too restrictive
+4. **success**: Numeric extraction successful
+
+### Visualization Features
+- **Bounding box drawing**: Display detected text regions in blue
+- **Numeric region highlighting**: Highlight regions recognized as numeric in green
+- **Analysis result display**: Show failure stage, number of detected lines, and number of numeric candidates on image
+
+## 🛠️ Technical Specifications
+
+### Dependencies
 - **OCR**: Azure Computer Vision API
-- **機械学習**: PyTorch（YOLOベース）
-- **データ処理**: NumPy, pandas
-- **設定管理**: YAML
-- **可視化**: matplotlib
+- **Image Processing**: OpenCV (cv2)
+- **Numerical Processing**: NumPy
+- **Data Formats**: JSON, JSONL, TSV
 
-### 必須依存関係
-```
-ultralytics         # YOLO v8
-opencv-python      # 画像処理
-azure-ai-vision-imageanalysis  # Azure OCR
-python-dotenv      # 環境変数管理
-tqdm              # プログレスバー
-pyyaml            # YAML設定ファイル
-numpy             # 数値計算
-```
-
-## 📁 プロジェクト構造
-
-```
-object-detection-demo/
-├── config/                      # 設定ファイル
-│   ├── gauge_config.yml        # メーター仕様設定
-│   ├── eval_config.yml         # 評価設定
-│   ├── azure_ocr.yml          # Azure OCR設定
-│   └── preprocessing_config.yml # 前処理設定
-├── data/                       # 学習・評価データ
-│   ├── images/
-│   │   ├── train/             # 学習画像（28枚）
-│   │   ├── val/               # 検証画像（8枚）
-│   │   └── test/              # テスト画像（4枚）
-│   └── labels/                # YOLO形式ラベル
-├── data_ocr/                   # OCR専用データ
-├── scripts/                    # 実行スクリプト
-│   ├── eval_angle_mae.py      # 角度精度評価
-│   ├── eval_value_mae.py      # 数値精度評価
-│   └── ocr/                   # OCRモジュール
-│       ├── run_ocr.py         # OCR実行メイン
-│       ├── analyze_ocr_results.py # OCR結果分析
-│       └── preprocess/        # 前処理エンジン
-├── runs/                       # 学習・実行結果
-│   ├── pose/train3/weights/   # 学習済みモデル
-│   └── ocr/                   # OCR実行結果
-├── docs/                       # ドキュメント
-├── dataset.yaml                # YOLOデータセット設定
-└── yolov8n-pose.pt            # 事前学習モデル
-```
-
-## 🚀 環境セットアップ
-
-### 1. 必要な環境
-- Python 3.8+
-- CUDA対応GPU（推奨、CPUでも動作可能）
-- Azure Computer Vision APIキー
-
-### 2. 依存関係のインストール
+### Environment Setup
 ```bash
-# 仮想環境の作成・有効化
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# または
-venv\Scripts\activate     # Windows
-
-# 必要なライブラリのインストール
-pip install ultralytics opencv-python azure-ai-vision-imageanalysis
-pip install python-dotenv tqdm pyyaml numpy matplotlib
+# Environment variable setup (.env file)
+VISION_ENDPOINT=https://your-endpoint.cognitiveservices.azure.com/
+VISION_KEY=your-api-key
 ```
 
-### 3. 環境変数の設定
-プロジェクトルートに `.env` ファイルを作成：
-```env
-VISION_ENDPOINT=https://your-resource.cognitiveservices.azure.com/
-VISION_KEY=your-azure-vision-api-key
+### Performance Optimization
+- **Image size limitation**: Automatic resize when exceeding 20MB
+- **Early termination**: Immediate stop upon success
+- **ROI fallback**: Region-based processing when overall processing fails
+
+## 📊 Experimental Results
+
+### Success Rate Statistics
+- **Total Images**: 26 images (test dataset)
+- **Successful**: 20 images
+- **Success Rate**: 76.9%
+
+### Device-specific Performance
+- Thermometers: High accuracy (optimized for LCD displays)
+- Stopwatches: Good (supports time format normalization)
+- Calculators: Good (optimized for digit recognition)
+- Digital clocks: Good (supports time patterns)
+
+### Preprocessing Effects
+- **S0 (Original image)**: Basic success rate
+- **S1 (Basic presets)**: Improvement for LCD/LED displays
+- **S2 (Scale × presets)**: Improvement for small characters/digits
+- **S3 (ROI processing)**: Numeric extraction from complex backgrounds
+
+## 🔧 Customization
+
+### Regular Expression Pattern Adjustment
+```python
+# More strict pattern
+NUMERIC_RE = re.compile(r"^[0-9:.,]+$")
+
+# More lenient pattern
+NUMERIC_RE = re.compile(r"^[0-9OIl:.,+\-_/\\()\s°C°F%℃A-Z]+$")
 ```
 
-### 4. YOLOモデルの準備
-```bash
-# 事前学習モデルのダウンロード（自動実行される場合もあり）
-# yolov8n-pose.pt は既にプロジェクトに含まれています
-
-# 学習済みカスタムモデルの場所
-# runs/pose/train3/weights/best.pt
+### Preprocessing Parameter Adjustment
+```python
+# Inside PreprocessingOperations class
+def _lcd_strong(self, image):
+    # Gamma correction value adjustment
+    gamma = 0.4  # For darker displays: 0.3, for brighter displays: 0.6
+    
+    # CLAHE intensity adjustment
+    clahe_strong = cv2.createCLAHE(clipLimit=5.0, tileGridSize=(4, 4))
 ```
 
-## 🎮 主要機能の使用方法
-
-### 1. 針角度の評価
-```bash
-cd /home/tomotomo/workspace/object-detection-demo
-python scripts/eval_angle_mae.py
-```
-**機能**: テストデータに対して針の角度予測精度を評価
-**出力**: 
-- 角度MAE（平均絶対誤差）
-- 可視化画像（GT vs 予測の矢印表示）
-- CSV・JSON形式の詳細結果
-
-### 2. 数値変換の評価
-```bash
-python scripts/eval_value_mae.py
-```
-**機能**: 角度から実際の測定値への変換精度を評価
-**前提**: `config/gauge_config.yml` の設定が正しく行われていること
-
-### 3. OCR実行
-```bash
-python scripts/ocr/run_ocr.py --glob "data_ocr/images/*.*"
-```
-**機能**: 
-- Azure Computer Vision APIを使用した文字認識
-- 前処理エンジンによる画像品質向上
-- 数値のみの抽出・正規化
-
-**オプション**:
-- `--no-preprocessing`: 前処理を無効化
-- `--outdir`: 出力先ディレクトリ指定
-
-### 4. OCR結果の分析
-```bash
-python scripts/ocr/analyze_ocr_results.py runs/ocr/latest/results.jsonl
-```
-**機能**: OCR実行結果の詳細分析と失敗要因の特定
-
-## 📈 現在の開発状況
-
-### ✅ 完成済み機能
-1. **物体検出システム**
-   - YOLOv8n-poseによる針検出（mAP50: 99.5%）
-   - pivot（回転軸）とtip（先端）のキーポイント検出
-   - 学習パイプラインの確立
-
-2. **角度計算システム**
-   - 画像座標系での正確な角度算出
-   - 円周上の最短差による誤差測定
-   - 可視化機能付き評価システム
-
-3. **OCR前処理システム**
-   - 段階的画像前処理エンジン
-   - Azure Computer Vision API統合
-   - 数値抽出・正規化機能
-
-4. **評価・分析ツール**
-   - 角度MAE評価スクリプト
-   - OCR結果分析ツール
-   - 可視化・レポート生成機能
-
-### ⚠️ 改善が必要な課題
-
-#### 1. 角度精度の向上（最優先）
-- **現状**: MAE 48.26°
-- **目標**: ≤3°
-- **原因**: pivot位置の微小誤差（2-3ピクセル）が角度誤差に拡大
-- **対策**: データ量増加（28枚 → 98枚 → 147枚の段階的増強）
-
-#### 2. データ不足
-- **現状**: 学習データ40枚（train:28, val:8, test:4）
-- **課題**: 汎化性能不足、統計的信頼性の低さ
-- **計画**: 
-  - Phase1: 70枚 → MAE 25-30°期待
-  - Phase2: 140枚 → MAE 10-15°期待
-  - Phase3: 210枚 → MAE 3-5°期待
-
-#### 3. アノテーション品質
-- **課題**: pivot位置の一貫性不足
-- **対策**: 
-  - ガイド円を使用した精密アノテーション
-  - アノテーションガイドライン策定
-  - 複数人による相互チェック
-
-### ❌ 未実装機能
-
-1. **実用システム化**
-   - API化（REST API、バッチ処理対応）
-   - エラーハンドリング強化
-   - 複数画像の一括処理
-
-2. **機種対応拡張**
-   - SKU別仕様管理システム
-   - 複数メーター機種への対応
-   - 動的設定切り替え
-
-3. **値変換システム**
-   - 角度→数値変換の実装
-   - 値MAE評価の実行
-   - メーター機種別の変換ロジック
-
-## 🎯 開発の優先順位
-
-### Phase 1（短期: 1-2週間）
-1. **データ収集**: train+21枚の追加撮影・アノテーション
-2. **再学習・評価**: MAE改善効果の確認
-3. **値MAE実装**: 実用性評価の開始
-
-### Phase 2（中期: 1ヶ月）
-4. **更なるデータ増加**: train=98枚まで拡張
-5. **アノテーション品質向上**: ガイドライン策定・相互チェック
-6. **機種対応設計**: SKU管理システムの基盤構築
-
-### Phase 3（長期: 2-3ヶ月）
-7. **実用システム化**: API化・バッチ処理対応
-8. **パフォーマンス最適化**: 推論速度の向上
-9. **エラーハンドリング**: 異常画像・未検出時の処理
-
-## 💡 開発を始める前に
-
-### 1. 既存ドキュメントの確認
-- `docs/project_status.md`: 詳細な進捗状況
-- `docs/ocr_analysis_report.md`: OCR分析結果
-
-### 2. データセットの理解
-- YOLO Pose形式のラベル構造
-- キーポイント（pivot, tip）の意味
-- 画像サイズと正規化座標系
-
-### 3. 設定ファイルの確認
-- `config/gauge_config.yml`: メーター仕様設定
-- `dataset.yaml`: YOLOデータセット設定
-
-### 4. 評価結果の確認
-```bash
-# 最新の学習結果確認
-ls runs/pose/train3/
-# 最新のOCR結果確認  
-ls runs/ocr/
+### ROI Detection Parameter Adjustment
+```python
+def extract_horizontal_rois(self, image: np.ndarray, k: int = 3):
+    # Aspect ratio threshold adjustment
+    if aspect_ratio > 1.5 and area > (w * h * 0.005):  # 1.5 → 2.0 (more horizontal)
+        
+    # Minimum area threshold adjustment
+    if aspect_ratio > 1.5 and area > (w * h * 0.01):   # 0.005 → 0.01 (larger regions)
 ```
 
-## 🔗 関連リソース
+## 🐛 Troubleshooting
 
-- [Ultralytics YOLO v8 Documentation](https://docs.ultralytics.com/)
-- [Azure Computer Vision API](https://docs.microsoft.com/en-us/azure/cognitive-services/computer-vision/)
-- [Roboflow Dataset](https://universe.roboflow.com/objectdetection-kjwct/my-first-project-zsqfw/dataset/2)
+### Common Issues
 
-## 🤝 コントリビューション
+1. **Azure API Authentication Error**
+   ```
+   Solution: Check VISION_ENDPOINT and VISION_KEY in .env file
+   ```
 
-新規開発者の皆様、このプロジェクトへようこそ！まずは上記のセットアップを完了し、既存の評価スクリプトを実行して現在の状況を把握してください。質問や提案がございましたら、お気軽にお声かけください。
+2. **Image Loading Error**
+   ```
+   Solution: Check image path and format (jpg, png)
+   ```
 
-**重要**: コマンド実行時は `pnpm` ではなく `python` コマンドを使用し、ターミナルコマンドで `&&` は使用しないでください。 
+3. **Low Number Recognition Rate**
+   ```
+   Solution: Adjust regular expression pattern with --test-regex option
+   ```
+
+4. **Preprocessing Not Effective**
+   ```
+   Solution: Adjust PreprocessingOperations parameters
+   ```
+
+### Debugging Methods
+
+1. **Check Detailed Logs**
+   ```bash
+   python scripts/ocr/run_ocr.py --verbose
+   ```
+
+2. **Check via Visualization**
+   ```bash
+   python scripts/ocr/analyze_ocr_results.py --results-dir runs/ocr/latest
+   # Check images in visualizations/ folder
+   ```
+
+3. **Analyze Failed Cases**
+   ```bash
+   # Check failed_cases.json to analyze failure patterns
+   ```
+
+## 📝 Future Improvements
+
+### Short-term Improvements
+- [ ] Support for more diverse digital display formats
+- [ ] Automatic optimization of preprocessing parameters
+- [ ] Result filtering using confidence scores
+
+### Long-term Improvements
+- [ ] Integration of deep learning-based number recognition
+- [ ] Real-time processing optimization
+- [ ] Multi-language support (non-alphanumeric characters)
+
+## 📄 License
+
+This project is provided under the CC BY 4.0 license. 
