@@ -1,5 +1,13 @@
 # Digital Number OCR Reading System
 
+> **⚠️ Important Note:**
+> - This repository contains legacy code for analog-to-digital processing, which should be **ignored**.
+> - Please focus only on the following directories and files:
+>   - `scripts/ocr/` - OCR processing scripts
+>   - `data_ocr/` - OCR input data
+>   - `docs/README.md` - This documentation
+> - All other analog meter detection code is not part of the current OCR system.
+
 ## 📋 Overview
 
 This system is a **high-precision digital number recognition system that combines Azure Computer Vision API with a proprietary multi-stage preprocessing engine**. It automatically extracts numbers from digital display devices (thermometers, stopwatches, calculators, digital clocks, etc.) and normalizes/analyzes them to achieve automated digital reading.
