@@ -28,25 +28,20 @@ ENV/
 env.bak/
 venv.bak/
 
-# YOLO/Ultralytics - 重要ファイルのみ共有
+# YOLO/Ultralytics
 runs/
-!runs/pose/train3/weights/best.pt      # 最良モデルのみ共有
-!runs/experiment_summary.json          # 実験サマリーのみ共有
 *.pt
-!yolov8n-pose.pt                       # 事前学習モデルは共有
 *.onnx
 *.engine
 *.tflite
 *.pb
 
-# Data files - サンプルのみ共有
+# Data files
 *.jpg
 *.jpeg
 *.png
 *.bmp
 *.tiff
-!data/sample_images/                   # サンプル画像フォルダのみ共有
-!docs/images/                          # ドキュメント用画像は共有
 *.mp4
 *.avi
 *.mov
@@ -54,7 +49,10 @@ runs/
 *.webm
 datasets/
 data/
-!data/README.md                        # データセット説明は共有
+data_*/
+
+# Documentation
+docs/
 
 # IDE
 .vscode/
