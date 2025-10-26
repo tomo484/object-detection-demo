@@ -113,7 +113,9 @@
 
 3. **環境変数の設定**
    ```bash
-   # .envファイルを作成
+   # env.exampleを.envにコピーして編集
+   cp env.example .env
+   # .envファイルを編集して実際の値を設定
    VISION_ENDPOINT=https://your-vision.cognitiveservices.azure.com/
    VISION_KEY=your-api-key
    ```
@@ -176,38 +178,49 @@ curl -X POST "http://localhost:8000/api/ocr/analyze" \
 
 ## プロジェクト構造
 
+### プロダクション用
 ```
-api/
-├── __init__.py
-├── main.py                    # FastAPIアプリケーション
-├── models/
+├── api/                       # FastAPI OCRサービス
 │   ├── __init__.py
-│   ├── request.py            # リクエストモデル
-│   └── response.py           # レスポンスモデル
-├── routers/
-│   ├── __init__.py
-│   └── ocr.py                # OCRエンドポイント
-├── services/
-│   ├── __init__.py
-│   └── ocr_service.py        # OCR処理ロジック
-├── core/
-│   ├── __init__.py
-│   ├── config.py             # 設定管理
-│   └── azure_client.py       # Azure Client管理
-├── dependencies.py           # 依存性注入
-└── utils/
-    ├── __init__.py
-    └── image_processing.py   # 画像処理ユーティリティ
+│   ├── main.py               # FastAPIアプリケーション
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── request.py        # リクエストモデル
+│   │   └── response.py       # レスポンスモデル
+│   ├── routers/
+│   │   ├── __init__.py
+│   │   └── ocr.py            # OCRエンドポイント
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── ocr_service.py    # OCR処理ロジック
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── config.py         # 設定管理
+│   │   └── azure_client.py   # Azure Client管理
+│   ├── dependencies.py       # 依存性注入
+│   └── utils/
+│       ├── __init__.py
+│       └── image_processing.py # 画像処理ユーティリティ
+├── Dockerfile                # Container Apps用
+├── .dockerignore            # Docker除外設定
+├── env.example              # 環境変数サンプル
+├── requirements-api.txt     # 依存関係
+├── README.md               # このファイル
+└── .gitignore              # Git除外設定
+```
 
-scripts/
-└── ocr/
-    ├── run_ocr.py            # バッチOCR処理
-    ├── single_image_ocr.py   # 単一画像OCR処理
-    └── preprocess/           # 前処理エンジン
-        ├── __init__.py
-        ├── engine.py
-        ├── logger.py
-        └── operations.py
+### 実験・開発履歴
+```
+experiments/                 # 研究・実験用コード（参考用）
+├── scripts/
+│   └── ocr/
+│       ├── run_ocr.py       # バッチOCR処理
+│       ├── single_image_ocr.py # 単一画像OCR処理
+│       └── preprocess/      # 前処理エンジン
+├── data_ocr/               # OCR用テストデータ
+├── runs/                   # 実験結果
+├── docs/                   # 実験ドキュメント
+└── config/                 # 実験設定
 ```
 
 ## 機能
