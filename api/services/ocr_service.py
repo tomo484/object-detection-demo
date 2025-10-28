@@ -48,13 +48,63 @@ class OCRService:
                 }
             }
             
-        except Exception as e:
+        except ValueError as e:
+            # 画像処理関連エラー（Base64、サイズ、形式など）
             processing_time = time.time() - start_time
             return {
                 "success": False,
                 "error": {
-                    "code": "OCR_FAILED",
-                    "message": str(e)
+                    "code": "INVALID_IMAGE",
+                    "message": "画像の形式が不正です。再度写真を撮って、お試しください"
                 },
-                "processing_time": processing_time
+                "processing_time": processing_time,
+                "result": {
+                    "text_normalized": "",
+                    "preprocessing_attempts": 0
+                },
+                "metadata": {
+                    "total_lines_detected": 0,
+                    "numeric_candidates": 0
+                }
+            }
+        except ConnectionError as e:
+            # ネットワーク関連エラー
+            processing_time = time.time() - start_time
+            return {
+                "success": False,
+                "error": {
+                    "code": "NETWORK_ERROR",
+                    "message": "ネットワークエラーが発生しました。再度お試しください"
+                },
+                "processing_time": processing_time,
+                "result": {
+                    "text_normalized": "",
+                    "preprocessing_attempts": 0
+                },
+                "metadata": {
+                    "total_lines_detected": 0,
+                    "numeric_candidates": 0
+                }
+            }
+        except Exception as e:
+            # その他のエラー（Azure API、前処理エンジンなど）
+            processing_time = time.time() - start_time
+            # Azure APIエラーの特別処理
+            error_code = "AZURE_API_ERROR" if "InvalidRequest" in str(e) or "InvalidImageSize" in str(e) else "OCR_FAILED"
+            
+            return {
+                "success": False,
+                "error": {
+                    "code": error_code,
+                    "message": "OCR読み取りができませんでした。再度写真を撮って、お試しください"
+                },
+                "processing_time": processing_time,
+                "result": {
+                    "text_normalized": "",
+                    "preprocessing_attempts": 0
+                },
+                "metadata": {
+                    "total_lines_detected": 0,
+                    "numeric_candidates": 0
+                }
             }
