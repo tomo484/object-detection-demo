@@ -19,10 +19,8 @@ class OCRService:
         start_time = time.time()
         
         try:
-            # Base64 → バイト列変換
             image_bytes = decode_base64_image(image_base64)
             
-            # OCR処理（前処理エンジン使用）
             result, analysis = analyze_single_image(
                 self.azure_client, 
                 image_bytes, 
@@ -31,7 +29,6 @@ class OCRService:
             
             processing_time = time.time() - start_time
             
-            # 結果の整形
             numeric_results = analysis["numeric"]
             best_result = numeric_results[0]["normalized"] if numeric_results else ""
             
@@ -48,13 +45,59 @@ class OCRService:
                 }
             }
             
-        except Exception as e:
+        except ValueError as e:
             processing_time = time.time() - start_time
             return {
                 "success": False,
                 "error": {
-                    "code": "OCR_FAILED",
-                    "message": str(e)
+                    "code": "INVALID_IMAGE",
+                    "message": "画像の形式が不正です。再度写真を撮って、お試しください"
                 },
-                "processing_time": processing_time
+                "processing_time": processing_time,
+                "result": {
+                    "text_normalized": "",
+                    "preprocessing_attempts": 0
+                },
+                "metadata": {
+                    "total_lines_detected": 0,
+                    "numeric_candidates": 0
+                }
+            }
+        except ConnectionError as e:
+            processing_time = time.time() - start_time
+            return {
+                "success": False,
+                "error": {
+                    "code": "NETWORK_ERROR",
+                    "message": "ネットワークエラーが発生しました。再度お試しください"
+                },
+                "processing_time": processing_time,
+                "result": {
+                    "text_normalized": "",
+                    "preprocessing_attempts": 0
+                },
+                "metadata": {
+                    "total_lines_detected": 0,
+                    "numeric_candidates": 0
+                }
+            }
+        except Exception as e:
+            processing_time = time.time() - start_time
+            error_code = "AZURE_API_ERROR" if "InvalidRequest" in str(e) or "InvalidImageSize" in str(e) else "OCR_FAILED"
+            
+            return {
+                "success": False,
+                "error": {
+                    "code": error_code,
+                    "message": "OCR読み取りができませんでした。再度写真を撮って、お試しください"
+                },
+                "processing_time": processing_time,
+                "result": {
+                    "text_normalized": "",
+                    "preprocessing_attempts": 0
+                },
+                "metadata": {
+                    "total_lines_detected": 0,
+                    "numeric_candidates": 0
+                }
             }

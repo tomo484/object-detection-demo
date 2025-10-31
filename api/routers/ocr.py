@@ -21,22 +21,8 @@ async def analyze_ocr(
     ocr_service: OCRService = Depends(get_ocr_service)
 ):
     """OCR解析エンドポイント"""
-    try:
-        result = ocr_service.process_image(request.image_base64)
-        
-        if result["success"]:
-            return result
-        else:
-            # エラーレスポンスを返す
-            return result
-            
-    except Exception as e:
-        # 予期しないエラー
-        return {
-            "success": False,
-            "error": {
-                "code": "INTERNAL_ERROR",
-                "message": f"Internal server error: {str(e)}"
-            }
-        }
+    # OCRサービスですべてのエラーハンドリングを行うため、
+    # ルーター層では単純に結果を返すだけ
+    result = ocr_service.process_image(request.image_base64)
+    return result
 

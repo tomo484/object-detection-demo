@@ -5,14 +5,12 @@ from .routers import ocr
 from .core.config import settings
 
 
-# FastAPIアプリケーション初期化
 app = FastAPI(
     title="OCR Analysis API",
     description="カメラ撮影画像のOCR解析API",
     version="1.0.0"
 )
 
-# CORS設定
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # 本番環境では適切に制限する
@@ -21,7 +19,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ルーター登録
 app.include_router(ocr.router, prefix="/api")
 
 
@@ -42,7 +39,6 @@ async def health_check():
         return {"status": "unhealthy", "message": str(e)}
 
 
-# アプリケーション起動時の処理
 @app.on_event("startup")
 async def startup_event():
     """起動時処理"""
