@@ -19,10 +19,8 @@ class OCRService:
         start_time = time.time()
         
         try:
-            # Base64 → バイト列変換
             image_bytes = decode_base64_image(image_base64)
             
-            # OCR処理（前処理エンジン使用）
             result, analysis = analyze_single_image(
                 self.azure_client, 
                 image_bytes, 
@@ -31,7 +29,6 @@ class OCRService:
             
             processing_time = time.time() - start_time
             
-            # 結果の整形
             numeric_results = analysis["numeric"]
             best_result = numeric_results[0]["normalized"] if numeric_results else ""
             
@@ -49,7 +46,6 @@ class OCRService:
             }
             
         except ValueError as e:
-            # 画像処理関連エラー（Base64、サイズ、形式など）
             processing_time = time.time() - start_time
             return {
                 "success": False,
@@ -68,7 +64,6 @@ class OCRService:
                 }
             }
         except ConnectionError as e:
-            # ネットワーク関連エラー
             processing_time = time.time() - start_time
             return {
                 "success": False,
@@ -87,9 +82,7 @@ class OCRService:
                 }
             }
         except Exception as e:
-            # その他のエラー（Azure API、前処理エンジンなど）
             processing_time = time.time() - start_time
-            # Azure APIエラーの特別処理
             error_code = "AZURE_API_ERROR" if "InvalidRequest" in str(e) or "InvalidImageSize" in str(e) else "OCR_FAILED"
             
             return {

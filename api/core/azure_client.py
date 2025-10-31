@@ -16,7 +16,7 @@ class AzureClientManager:
     def get_client(self) -> ImageAnalysisClient:
         """Azure Vision Clientを取得（初回のみ作成）"""
         if self._client is None:
-            settings.validate()  # 設定検証
+            settings.validate()
             self._client = ImageAnalysisClient(
                 endpoint=settings.vision_endpoint,
                 credential=AzureKeyCredential(settings.vision_key)
@@ -24,5 +24,4 @@ class AzureClientManager:
         return self._client
 
 
-# グローバルインスタンス
 azure_client_manager = AzureClientManager()
