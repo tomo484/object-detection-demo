@@ -9,13 +9,11 @@ from ..models.response import MlApiResponse, MlApiResult, MlApiMetadata
 
 
 class OCRService:
-    """OCR処理サービス"""
     
     def __init__(self, azure_client: ImageAnalysisClient):
         self.azure_client = azure_client
     
     def process_image(self, image_base64: str) -> Dict[str, Any]:
-        """画像のOCR処理を実行"""
         start_time = time.time()
         
         try:

@@ -13,7 +13,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 本番環境では適切に制限する
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -24,15 +24,12 @@ app.include_router(ocr.router, prefix="/api")
 
 @app.get("/")
 async def root():
-    """ルートエンドポイント"""
     return {"message": "OCR Analysis API", "status": "running"}
 
 
 @app.get("/health")
 async def health_check():
-    """ヘルスチェックエンドポイント"""
     try:
-        # 設定の検証
         settings.validate()
         return {"status": "healthy", "message": "API is running"}
     except Exception as e:
@@ -41,7 +38,6 @@ async def health_check():
 
 @app.on_event("startup")
 async def startup_event():
-    """起動時処理"""
     print("OCR Analysis API starting up...")
     try:
         settings.validate()
