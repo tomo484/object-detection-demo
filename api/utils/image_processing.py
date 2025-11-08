@@ -4,7 +4,6 @@ import numpy as np
 
 
 def decode_base64_image(image_base64: str) -> bytes:
-    """Base64画像をバイト列に変換"""
     
     if image_base64.startswith("data:image"):
         image_base64 = image_base64.split(",")[1]
@@ -24,7 +23,6 @@ def decode_base64_image(image_base64: str) -> bytes:
 
 
 def validate_image_format(image_bytes: bytes) -> bool:
-    """画像形式の検証"""
     try:
         img_array = np.frombuffer(image_bytes, np.uint8)
         image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
